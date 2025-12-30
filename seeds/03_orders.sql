@@ -1,0 +1,87 @@
+-- seeds/03_orders.sql
+-- Insert 80 orders (realistic statuses + a few intentional edge cases)
+
+INSERT INTO orders (user_id, status, total_amount, created_at) VALUES
+(1,  'created',   0.00,    NOW() - INTERVAL '25 days'),  -- edge: total 0
+(2,  'paid',      1299.00, NOW() - INTERVAL '24 days'),
+(3,  'paid',      399.00,  NOW() - INTERVAL '23 days'),
+(4,  'shipped',   1899.00, NOW() - INTERVAL '22 days'),
+(5,  'delivered', 5499.00, NOW() - INTERVAL '21 days'),
+(6,  'cancelled', 799.00,  NOW() - INTERVAL '20 days'),
+(7,  'paid',      2999.00, NOW() - INTERVAL '19 days'),
+(8,  'created',   499.00,  NOW() - INTERVAL '18 days'),
+(9,  'paid',      999.00,  NOW() - INTERVAL '17 days'),
+(10, 'delivered', 2499.00, NOW() - INTERVAL '16 days'),
+
+(11, 'shipped',   599.00,  NOW() - INTERVAL '15 days'),
+(12, 'paid',      899.00,  NOW() - INTERVAL '14 days'),
+(13, 'created',   349.00,  NOW() - INTERVAL '13 days'),
+(14, 'paid',      1399.00, NOW() - INTERVAL '12 days'),
+(15, 'delivered', 3799.00, NOW() - INTERVAL '11 days'),
+(16, 'cancelled', 229.00,  NOW() - INTERVAL '10 days'),
+(17, 'paid',      4999.00, NOW() - INTERVAL '9 days'),
+(18, 'created',   699.00,  NOW() - INTERVAL '8 days'),
+(19, 'paid',      3499.00, NOW() - INTERVAL '7 days'),
+(20, 'shipped',   10999.00,NOW() - INTERVAL '6 days'),
+
+(21, 'paid',      549.00,  NOW() - INTERVAL '6 days'),
+(22, 'delivered', 1799.00, NOW() - INTERVAL '6 days'),
+(23, 'paid',      149.00,  NOW() - INTERVAL '5 days'),
+(24, 'created',   349.00,  NOW() - INTERVAL '5 days'),
+(25, 'paid',      6999.00, NOW() - INTERVAL '5 days'),
+(26, 'cancelled', 299.00,  NOW() - INTERVAL '5 days'),
+(27, 'paid',      8999.00, NOW() - INTERVAL '4 days'),
+(28, 'shipped',   11999.00,NOW() - INTERVAL '4 days'),
+(29, 'delivered', 999.00,  NOW() - INTERVAL '4 days'),
+(30, 'paid',      249.00,  NOW() - INTERVAL '4 days'),
+
+(31, 'created',   59.00,   NOW() - INTERVAL '3 days'),
+(32, 'paid',      4599.00, NOW() - INTERVAL '3 days'),
+(33, 'paid',      899.00,  NOW() - INTERVAL '3 days'),
+(34, 'shipped',   1999.00, NOW() - INTERVAL '3 days'),
+(35, 'delivered', 6499.00, NOW() - INTERVAL '3 days'),
+(36, 'paid',      1499.00, NOW() - INTERVAL '3 days'),
+(37, 'cancelled', 399.00,  NOW() - INTERVAL '2 days'),
+(38, 'paid',      1799.00, NOW() - INTERVAL '2 days'),
+(39, 'created',   349.00,  NOW() - INTERVAL '2 days'),
+(40, 'paid',      1599.00, NOW() - INTERVAL '2 days'),
+
+(41, 'shipped',   499.00,  NOW() - INTERVAL '2 days'),
+(42, 'delivered', 699.00,  NOW() - INTERVAL '2 days'),
+(43, 'paid',      899.00,  NOW() - INTERVAL '2 days'),
+(44, 'paid',      2499.00, NOW() - INTERVAL '2 days'),
+(45, 'created',   299.00,  NOW() - INTERVAL '1 days'),
+(46, 'paid',      7999.00, NOW() - INTERVAL '1 days'),
+(47, 'paid',      29.00,   NOW() - INTERVAL '1 days'),
+(48, 'cancelled', 399.00,  NOW() - INTERVAL '1 days'),
+(49, 'paid',      899.00,  NOW() - INTERVAL '1 days'),
+(50, 'delivered', 129.00,  NOW() - INTERVAL '1 days'),
+
+-- repeat users to reach 80 orders
+(5,  'paid',      999.00,  NOW() - INTERVAL '1 days'),
+(7,  'paid',      1799.00, NOW() - INTERVAL '1 days'),
+(9,  'shipped',   1899.00, NOW() - INTERVAL '1 days'),
+(12, 'delivered', 249.00,  NOW() - INTERVAL '1 days'),
+(15, 'paid',      3799.00, NOW() - INTERVAL '1 days'),
+(18, 'created',   0.00,    NOW() - INTERVAL '1 days'), -- edge: total 0
+(20, 'paid',      349.00,  NOW() - INTERVAL '1 days'),
+(22, 'cancelled', 499.00,  NOW() - INTERVAL '1 days'),
+(24, 'paid',      699.00,  NOW() - INTERVAL '1 days'),
+(26, 'shipped',   1399.00, NOW() - INTERVAL '1 days'),
+
+(28, 'paid',      15999.00,NOW() - INTERVAL '1 days'),
+(30, 'paid',      3499.00, NOW() - INTERVAL '1 days'),
+(32, 'created',   199.00,  NOW() - INTERVAL '1 days'),
+(34, 'paid',      249.00,  NOW() - INTERVAL '1 days'),
+(36, 'delivered', 699.00,  NOW() - INTERVAL '1 days'),
+(38, 'paid',      899.00,  NOW() - INTERVAL '1 days'),
+(40, 'shipped',   2999.00, NOW() - INTERVAL '1 days'),
+(42, 'paid',      5499.00, NOW() - INTERVAL '1 days'),
+(44, 'created',   349.00,  NOW() - INTERVAL '1 days'),
+(46, 'paid',      1199.00, NOW() - INTERVAL '1 days'),
+
+-- Intentional business-rule edge: blocked users with active orders (we'll map these after you confirm blocked user ids)
+(47, 'paid',      899.00,  NOW() - INTERVAL '1 days'),
+(49, 'paid',      1299.00, NOW() - INTERVAL '1 days'),
+(3,  'paid',      999.00,  NOW() - INTERVAL '1 days'),
+(6,  'shipped',   1899.00, NOW() - INTERVAL '1 days');

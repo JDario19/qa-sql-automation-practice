@@ -1,6 +1,223 @@
 # QA SQL Automation Practice
 
-This repository is a complete, self-contained guide to set up PostgreSQL locally with Docker, connect with pgAdmin, create SQL schemas, and prepare an SQL project for QA Automation / SDET roles.
+This repository is a **complete, self-contained QA-oriented SQL project** designed to simulate a **real production e-commerce database**, including **intentional data bugs** to practice **real-world SQL validations** for **QA Automation / SDET roles**.
+
+The project runs **locally using PostgreSQL + Docker**, is fully versioned in GitHub, and is structured to be **portfolio-ready**.
+
+---
+
+## 🧠 Database Model Explanation (QA-Oriented)
+
+This database models a **realistic e-commerce system** built specifically for **QA / SDET SQL practice**.
+
+The dataset intentionally contains **both valid and invalid records**, allowing you to practice detecting **business, financial, and security issues** using SQL — exactly the type of problems QA engineers face in production systems.
+
+---
+
+## 🗺️ High-Level System Overview
+
+Relational structure:
+
+USERS  
+└── ORDERS  
+&nbsp;&nbsp;&nbsp;&nbsp;└── ORDER_ITEMS  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── PRODUCTS  
+&nbsp;&nbsp;&nbsp;&nbsp;└── PAYMENTS  
+&nbsp;&nbsp;&nbsp;&nbsp;└── SHIPMENTS  
+
+USERS  
+└── LOGIN_EVENTS  
+
+Each table represents a real business concept and is connected using **primary keys, foreign keys, and constraints**.
+
+---
+
+## 📦 Tables Overview
+
+### 1️⃣ `users`
+Represents system users (customers).
+
+Key fields:
+- `id` – primary identifier
+- `email` – unique
+- `status` – `active`, `inactive`, `blocked`
+
+Seeded data:
+- ~57 users
+- Mix of active, inactive, and blocked users
+
+QA relevance:
+- Blocked users should NOT place orders or log in
+- Violations represent **business rule or security bugs**
+
+---
+
+### 2️⃣ `products`
+Represents the product catalog.
+
+Key fields:
+- `sku` – unique product identifier
+- `price` – product price
+- `is_active` – availability flag
+
+Seeded data:
+- 60 products total
+- 55 active
+- 5 inactive
+- Includes very high and very low price edge cases
+
+QA relevance:
+- Inactive products being sold
+- Price validation
+- SKU uniqueness enforced via constraint
+
+---
+
+### 3️⃣ `orders`
+Represents a purchase made by a user.
+
+Key fields:
+- `user_id`
+- `status` – `created`, `paid`, `shipped`, `delivered`, `cancelled`
+- `total_amount`
+
+Seeded data:
+- ~80 orders
+- Orders created by multiple users
+- Includes intentional edge cases:
+  - Orders with `total_amount = 0`
+  - Orders created by blocked users
+
+QA relevance:
+- Orders without items
+- Incorrect totals
+- Invalid user behavior
+
+---
+
+### 4️⃣ `order_items`
+Represents line items inside an order.
+
+Key fields:
+- `order_id`
+- `product_id`
+- `qty`
+- `unit_price`
+
+Seeded data:
+- Automatically generated
+- Multiple items per order
+- Uses active products
+
+QA relevance:
+- Allows recalculating real order totals
+- Detects financial inconsistencies
+- Identifies empty orders
+
+---
+
+### 5️⃣ `payments`
+Represents payment transactions.
+
+Key fields:
+- `order_id`
+- `amount`
+- `method`
+- `status` – `approved`
+- `paid_at`
+
+Seeded data includes **intentional bugs**:
+- Duplicate approved payments for the same order (double charge)
+- Approved payment with `amount = 0`
+
+QA relevance:
+- Financial P0 issues
+- Billing validation
+- Payment/order mismatches
+
+---
+
+### 6️⃣ `shipments`
+Represents order shipments.
+
+Key fields:
+- `order_id`
+- `carrier`
+- `tracking_number`
+- `status` – `shipped`, `delivered`
+- `shipped_at`, `delivered_at`
+
+Seeded data includes **intentional bugs**:
+- Orders marked as shipped without a shipment
+- Shipments marked as delivered with `delivered_at = NULL`
+
+QA relevance:
+- Logistics inconsistencies
+- Backend/fulfillment desync
+
+---
+
+### 7️⃣ `login_events`
+Represents authentication events (audit & security).
+
+Key fields:
+- `user_id`
+- `event_type` – `login_success`, `login_failed`
+- `ip_address`
+- `user_agent`
+- `created_at`
+
+Seeded data:
+- ~220 login events
+- Includes **blocked users with login_success** (security bug)
+
+QA relevance:
+- Security validation
+- Audit trail checks
+- Compliance scenarios
+
+---
+
+## 🧪 Seed Data Philosophy
+
+The seed data intentionally includes **real production-like bugs**, such as:
+- Orders without items
+- Orders with incorrect totals
+- Duplicate approved payments
+- Approved payments with zero amount
+- Shipped orders without shipments
+- Delivered shipments without delivery timestamp
+- Blocked users logging in successfully
+- Blocked users placing orders
+
+This allows practicing **real QA SQL validations**, not just reporting queries.
+
+---
+
+## 🎯 QA Focus of This Project
+
+This project uses SQL as a **QA validation tool** to detect:
+- Business rule violations
+- Data integrity issues
+- Financial inconsistencies
+- Security vulnerabilities
+- Backend defects after UI/API flows
+
+---
+
+## 🧪 Queries Structure
+
+Queries are organized by difficulty and QA maturity:
+
+└── queries/
+    ├── basic/
+    ├── intermediate/
+    └── advanced/
+
+---
+
+
+Each folder contains **15+ interview-style queries**.
 
 ---
 
@@ -8,9 +225,9 @@ This repository is a complete, self-contained guide to set up PostgreSQL locally
 
 - Practice SQL using a real database
 - Run PostgreSQL locally with Docker
-- Use pgAdmin as a professional database UI
-- Version schemas and queries on GitHub
-- Prepare a portfolio-ready project
+- Use pgAdmin as a professional DB UI
+- Version schemas, seeds, and queries in GitHub
+- Prepare a portfolio-ready QA SQL project
 
 ---
 
@@ -25,194 +242,59 @@ This repository is a complete, self-contained guide to set up PostgreSQL locally
 
 ---
 
-## Project structure
+## 📁 Project Structure
 
 qa-sql-automation-practice/
 ├── docker-compose.yml
 ├── README.md
 ├── schema/
-│   └── 01_create_tables.sql
+│ └── 01_create_tables.sql
 ├── seeds/
+│ ├── 01_users.sql
+│ ├── 02_products.sql
+│ ├── 03_orders.sql
+│ ├── 04_order_items.sql
+│ ├── 05_payments.sql
+│ ├── 06_shipments.sql
+│ └── 07_login_events.sql
 └── queries/
-    ├── basic/
-    ├── intermediate/
-    └── advanced/
+├── basic/
+├── intermediate/
+└── advanced/
+
 
 ---
 
-## How to use this repository
+## 🚀 How to Use This Repository
 
-I split the instructions into two flows for clarity:
+Two setup flows are provided:
 
-1) When you have nothing configured (from scratch)
-2) When you've already cloned the repository (quick setup)
-
----
-
-A — If you have nothing configured (from scratch)
-
-Follow these steps if you start from a machine without Docker or any database installed.
-
+### A) From scratch (no Docker / DB installed)
 1. Install Docker Desktop (macOS)
-   - Visit: https://www.docker.com/products/docker-desktop/
-   - Download the version for your CPU (Intel or Apple Silicon)
-   - Install and open Docker Desktop. Wait until it shows "Docker Desktop is running".
+2. Start Docker and verify with `docker --version`
+3. Run `docker compose up -d`
+4. Open pgAdmin at http://localhost:5050
+5. Register PostgreSQL server (`postgres`, `qa_practice`)
+6. Run schema SQL
+7. Run seeds in order (`seeds/01_...` → `seeds/07_...`)
+8. Execute queries for practice
 
-2. Verify Docker
-
-```bash
-docker --version
-```
-
-3. Create the project folder (optional)
-
-```bash
-cd ~/Documents/GitHub
-mkdir -p qa-sql-automation-practice
-cd qa-sql-automation-practice
-```
-
-4. Create files and folders (if you haven't already)
-
-```bash
-mkdir -p schema seeds queries/{basic,intermediate,advanced}
-touch docker-compose.yml README.md .gitignore
-```
-
-5. Open in Visual Studio Code
-
-```bash
-code .
-```
-
-(If you don't have the `code` command, open VS Code → Cmd+Shift+P → "Shell Command: Install 'code' command in PATH")
-
-6. Configure Docker Compose
-
-- Open `docker-compose.yml` and review environment variables (user, password and database name).
-
-7. Start the containers
-
-```bash
-docker compose up -d
-```
-
-8. Verify containers
-
-```bash
-docker ps
-```
-
-You should see containers like `qa_sql_postgres` and `qa_sql_pgadmin`.
-
-9. Open pgAdmin in the browser
-
-- URL: http://localhost:5050
-- Email: `admin@local.com`
-- Password: `admin`
-
-10. Connect pgAdmin to PostgreSQL
-
-- In pgAdmin → Right-click Servers → Register → Server
-  - General: Name = QA PostgreSQL
-  - Connection:
-    - Host name/address: `postgres`
-    - Port: `5432`
-    - Maintenance database: `qa_practice`
-    - Username: `qa_user`
-    - Password: `qa_pass`
-    - Check "Save password"
-
-Note: the host is `postgres` because containers share the Docker network, not `localhost`.
-
-11. Create tables (example)
-
-In pgAdmin → select the `qa_practice` database → Query Tool → paste and run the SQL from `schema/01_create_tables.sql` or use this example:
-
-```sql
-CREATE TABLE users (
-  id BIGSERIAL PRIMARY KEY,
-  email VARCHAR(255) NOT NULL UNIQUE,
-  full_name VARCHAR(150) NOT NULL,
-  status VARCHAR(20) NOT NULL DEFAULT 'active',
-  created_at TIMESTAMP NOT NULL DEFAULT NOW()
-);
-```
-
-12. Save the schema in the repository
-
-- Create `schema/01_create_tables.sql` and add your CREATE TABLE statements there for versioning.
-
-13. Initialize Git and first commit
-
-```bash
-git init
-git add .
-git commit -m "Initial Dockerized PostgreSQL setup"
-```
-
-14. Create the repository on GitHub (via web)
-
-- Suggested name: `qa-sql-automation-practice`
-- Public
-- DO NOT add README or .gitignore via the web UI (you already have them locally)
-
-15. Push to remote
-
-```bash
-git branch -M main
-git remote add origin https://github.com/YOUR_USERNAME/qa-sql-automation-practice.git
-git push -u origin main
-```
+### B) Quick setup (repo already cloned)
+1. `git clone`
+2. `docker compose up -d`
+3. Open pgAdmin
+4. Run schema and seeds
+5. Practice queries
 
 ---
 
-B — If you've already cloned the repository (quick setup)
+## 💼 CV / Interview Value
 
-If you already have the repository on your machine (cloned), these are the minimum steps to start and test everything.
+You can confidently say:
 
-1. Clone the repository
+> “I designed and populated a Dockerized PostgreSQL database simulating a real e-commerce system, including intentional business, financial, and security bugs, and created SQL queries to detect production-grade issues as a QA engineer.”
 
-```bash
-git clone https://github.com/YOUR_USERNAME/qa-sql-automation-practice.git
-cd qa-sql-automation-practice
-```
-
-2. Verify Docker is installed and running
-
-```bash
-docker --version
-open -a Docker
-```
-
-3. Start services
-
-```bash
-docker compose up -d
-```
-
-4. Verify containers
-
-```bash
-docker ps
-```
-
-5. Open pgAdmin: http://localhost:5050 (admin@local.com / admin)
-6. Register the server in pgAdmin with the same values: host `postgres`, database `qa_practice`, user `qa_user`, password `qa_pass`.
-7. Run the SQL from `schema/01_create_tables.sql` (open the file and copy/paste into Query Tool) or use the GUI to apply the script.
-
-8. If you make changes, commit and push:
-
-```bash
-git add .
-git commit -m "Describe change"
-git push
-```
+This is **real QA work**, not tutorial SQL.
 
 ---
 
-If you want, I can:
-- Review and improve `docker-compose.yml` to ensure it matches the instructions.
-- Add a startup script (Makefile / npm script) to simplify commands.
-
-End.
