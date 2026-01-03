@@ -27,8 +27,6 @@ Tables involved:
 -- Validates:
 -- - Orders that should not exist or are incomplete
 -- - Pricing or calculation issues
---------------------------------------------------------
-
 -- QUERY 6
 select id, user_id, status, total_amount, created_at
 from orders
@@ -40,8 +38,6 @@ order by user_id
 -- Approved payments
 -- Validates:
 -- - Successful payment transactions
---------------------------------------------------------
-
 -- QUERY 7
 select id, order_id, amount, method, status, paid_at, created_at
 from payments
@@ -54,8 +50,6 @@ order by id
 -- Payments with amount = 0
 -- Validates:
 -- - Invalid or suspicious payment records
---------------------------------------------------------
-
 -- QUERY 8
 select id, order_id, amount, method, status, paid_at, created_at
 from payments
@@ -67,8 +61,6 @@ order by id
 -- Delivered shipments
 -- Validates:
 -- - Completed delivery records
---------------------------------------------------------
-
 -- QUERY 9
 select id, order_id, carrier, tracking_number, status, shipped_at, delivered_at, created_at
 from shipments
@@ -80,8 +72,6 @@ order by id
 -- Successful login events
 -- Validates:
 -- - Authentication flow correctness
---------------------------------------------------------
-
 -- QUERY 10
 select id, user_id, event_type, ip_address, user_agent, created_at
 from login_events

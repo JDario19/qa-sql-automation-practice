@@ -26,8 +26,6 @@ Tables involved:
 -- Validates:
 -- - User creation tracking
 -- - created_at consistency
---------------------------------------------------------
-
 -- QUERY 1
 select id, email, full_name, status, created_at 
 from users
@@ -39,8 +37,6 @@ order by created_at desc
 -- Validates:
 -- - Distribution of user states
 -- - Presence of blocked/inactive users
---------------------------------------------------------
-
 -- QUERY 2
 select status, count(*) as total
 from users
@@ -52,8 +48,6 @@ order by total desc
 -- List active products
 -- Validates:
 -- - Active catalog availability
---------------------------------------------------------
-
 -- QUERY 3
 select id, sku, name, price, is_active, created_at
 from products
@@ -64,8 +58,6 @@ where is_active = true
 -- List inactive products
 -- Validates:
 -- - Deprecated or disabled catalog items
---------------------------------------------------------
-
 -- QUERY 4
 select id, sku, name, price, is_active, created_at
 from products
@@ -76,8 +68,6 @@ where is_active = false
 -- List orders by status
 -- Validates:
 -- - Order lifecycle states
---------------------------------------------------------
-
 -- QUERY 5
 select id, user_id, status, total_amount, created_at
 from orders
