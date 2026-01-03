@@ -216,11 +216,6 @@ Queries are organized by difficulty and QA maturity:
 
 ---
 
-
-Each folder contains **15+ interview-style queries**.
-
----
-
 ## 🎯 Purpose
 
 - Practice SQL using a real database
@@ -285,16 +280,6 @@ Two setup flows are provided:
 3. Open pgAdmin
 4. Run schema and seeds
 5. Practice queries
-
----
-
-## 💼 CV / Interview Value
-
-You can confidently say:
-
-> “I designed and populated a Dockerized PostgreSQL database simulating a real e-commerce system, including intentional business, financial, and security bugs, and created SQL queries to detect production-grade issues as a QA engineer.”
-
-This is **real QA work**, not tutorial SQL.
 
 ---
 
